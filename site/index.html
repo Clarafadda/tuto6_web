@@ -1,10 +1,153 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>Visit counter</title>
-<h1 id="out">Loading... TEST n2</h1>
-<script>
-  fetch("/counter/api/visits")
-    .then((r) => r.json())
-    .then((d) => (out.textContent = `Visits to this page: ${d.visits}`))
-    .catch(() => (out.textContent = "The API cannot be reached"));
-</script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visit Counter</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #252545;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 430px;
+      padding: 45px 35px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      animation: appear 0.6s ease-out;
+    }
+
+    .icon {
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 35px;
+    }
+
+    .counter {
+      background: #f3f1ff;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    #count {
+      font-size: 58px;
+      font-weight: bold;
+      color: #7056c9;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .counter-label {
+      font-size: 13px;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 25px;
+      background: #7056c9;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #5840aa;
+      transform: translateY(-2px);
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="icon">📊</div>
+
+    <h1>Visit Counter</h1>
+    <p class="subtitle">A little dashboard to track page visits.</p>
+
+    <div class="counter">
+      <span id="count">...</span>
+      <span class="counter-label">Total visits</span>
+    </div>
+
+    <button onclick="loadVisits()">Refresh counter ↻</button>
+
+    <p class="footer">Powered by Flask, Redis & Docker</p>
+  </main>
+
+  <script>
+    async function loadVisits() {
+      const count = document.getElementById("count");
+
+      count.textContent = "...";
+
+      try {
+        const response = await fetch("/counter/api/visits");
+
+        if (!response.ok) {
+          throw new Error("API error");
+        }
+
+        const data = await response.json();
+        count.textContent = data.visits.toLocaleString();
+      } catch (error) {
+        count.textContent = "!";
+        console.error(error);
+      }
+    }
+
+    loadVisits();
+  </script>
+</body>
+</html>
