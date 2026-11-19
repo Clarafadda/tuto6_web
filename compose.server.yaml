@@ -2,21 +2,21 @@ services:
   site:
     ports: !reset []
     restart: unless-stopped
+    networks:
+      - default
+      - proxy
+
   api:
     ports: !reset []
     restart: unless-stopped
+    networks:
+      - default
+      - proxy
+
   db:
     restart: unless-stopped
-  caddy:
-    image: caddy:2.11-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
-volumes:
-  caddy-data:
-  caddy-config:
+
+networks:
+  proxy:
+    external: true
+    name: lastfm-cd-shelf_default
